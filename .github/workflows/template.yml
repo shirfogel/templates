@@ -54,22 +54,22 @@ jobs:
           ECR_REGISTRY: ${{ steps.login-ecr.outputs.registry }}
           IMAGE_TAG: ${{github.run_number}}
         run: |
-          echo "Will work from: ${{ inputs.service_name }}"
           repo_name=$(echo ${{ steps.string.outputs.lowercase }})
           Docker_image=$ECR_REGISTRY/$repo_name:$IMAGE_TAG
           echo "Docker_image: $Docker_image"
+          docker_folder=$(echo ${{ inputs.service_name }})
+          echo "Service: $docker_folder"
           arguments=$(echo ${{ inputs.docker_arguments }})
-          echo $arguments
+          echo "Arguments: $arguments"
           if [[ ! -z $arguments ]]
           then
             echo "there are arguments"
             arguments=$(echo ${{ inputs.docker_arguments }})
             echo "Arguments: $arguments"
-            command="docker build -t $Docker_image -f $service_name/Dockerfile --build-arg $arguments . "
+            command="docker build -t $Docker_image -f $docker_folder/Dockerfile --build-arg $arguments . "
           else
              echo "there are no arguments in docker file"
-             arguments=$(echo ${{ inputs.docker_arguments }})
-             command="docker build -f $service_name/Dockerfile . -t $Docker_image"
+             command="docker build -f $docker_folder/Dockerfile . -t $Docker_image"
            fi
           echo "$command"
           $command
