@@ -58,6 +58,8 @@ jobs:
           repo_name=$(echo ${{ steps.string.outputs.lowercase }})
           Docker_image=$ECR_REGISTRY/$repo_name:$IMAGE_TAG
           echo "Docker_image: $Docker_image"
+          arguments=$(echo ${{ inputs.service_name }})
+          echo "arguments"
           if [[ -z ${{ inputs.service_name }} ]]
           then
             echo "there are no arguments in docker file"
