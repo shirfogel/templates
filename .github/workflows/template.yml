@@ -59,16 +59,16 @@ jobs:
           Docker_image=$ECR_REGISTRY/$repo_name:$IMAGE_TAG
           echo "Docker_image: $Docker_image"
           arguments=$(echo ${{ inputs.service_name }})
-          echo "arguments"
-          if [[ -z ${{ inputs.service_name }} ]]
-          then
-            echo "there are no arguments in docker file"
-            command="docker build -f $REPOSITORY_NAME/Dockerfile . -t $Docker_image"
-          else
-             echo "there are arguments"
-             arguments=$(echo ${{ inputs.service_name }})
-             command="docker build -t $Docker_image -f $REPOSITORY_NAME/Dockerfile --build-arg $arguments . "
-           fi
-          echo "$command"
-          $command
-          docker push $Docker_image
+          echo $arguments
+          # if [[ -z ${{ inputs.service_name }} ]]
+          # then
+          #   echo "there are no arguments in docker file"
+          #   command="docker build -f $service_name/Dockerfile . -t $Docker_image"
+          # else
+          #    echo "there are arguments"
+          #    arguments=$(echo ${{ inputs.service_name }})
+          #    command="docker build -t $Docker_image -f $service_name/Dockerfile --build-arg $arguments . "
+          #  fi
+          # echo "$command"
+          # $command
+          # docker push $Docker_image
