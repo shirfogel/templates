@@ -6,6 +6,9 @@ on:
       service_name:
         required: true
         type: string
+      docker_arguments:
+        required: false
+        type: string
     secrets:
       aws-access-key-id:
         description: "access key id for ecr"
@@ -46,16 +49,24 @@ jobs:
           aws ecr describe-repositories --repository-names $repo_name || aws ecr create-repository --repository-name $repo_name
       - name: printing build id
         run: echo ${{github.run_number}}
-      # - name: Build, tag, and push image to Amazon ECR
-      #   env:
-      #     ECR_REGISTRY: ${{ steps.login-ecr.outputs.registry }}
-      #     IMAGE_TAG: ${{ steps.increment-git-tag.outputs.git-tag }}
-      #   run: |
-      #     echo "Will work from: $repository_name"
-      #     repo_name=$(echo ${{ steps.string.outputs.lowercase }})
-      #     Docker_image=$ECR_REGISTRY/$repo_name:$IMAGE_TAG
-      #     echo "Docker_image: $Docker_image"
-      #     command="docker build -f $REPOSITORY_NAME/Dockerfile . -t $Docker_image"
-      #     echo "$command"
-      #     $command
-      #     docker push $Docker_image
+      - name: Build, tag, and push image to Amazon ECR
+        env:
+          ECR_REGISTRY: ${{ steps.login-ecr.outputs.registry }}
+          IMAGE_TAG: ${{github.run_number}}
+        run: |
+          echo "Will work from: $service_name"
+          repo_name=$(echo ${{ steps.string.outputs.lowercase }})
+          Docker_image=$ECR_REGISTRY/$repo_name:$IMAGE_TAG
+          echo "Docker_image: $Docker_image"
+          if [[ -z ${{ inputs.service_name }} ]]
+          then
+            echo "there are no arguments in docker file"
+            command="docker build -f $REPOSITORY_NAME/Dockerfile . -t $Docker_image"
+          else
+             echo "there are arguments"
+             arguments=$(echo ${{ inputs.service_name }})
+             command="docker build -t $Docker_image -f $REPOSITORY_NAME/Dockerfile --build-arg $arguments . "
+           fi
+          echo "$command"
+          $command
+          docker push $Docker_image
