@@ -60,7 +60,7 @@ jobs:
           echo "Docker_image: $Docker_image"
           arguments=$(echo ${{ inputs.docker_arguments }})
           echo $arguments
-          if [[ ! -z ${{ inputs.docker_arguments }} ]]
+          if [[ ! -z $arguments ]]
           then
             echo "there are arguments"
             arguments=$(echo ${{ inputs.docker_arguments }})
