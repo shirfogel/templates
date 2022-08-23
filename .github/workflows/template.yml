@@ -69,7 +69,7 @@ jobs:
             command="docker build -t $Docker_image -f $docker_folder/Dockerfile --build-arg $arguments . "
           else
              echo "there are no arguments in docker file"
-             command="docker build -f $docker_folder/Dockerfile . -t $Docker_image"
+             command="docker build -f $docker_folder/Dockerfile . -t $Docker_image --progress=plain"
            fi
           echo "$command"
           $command
