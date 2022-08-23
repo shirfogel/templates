@@ -60,15 +60,17 @@ jobs:
           echo "Docker_image: $Docker_image"
           arguments=$(echo ${{ inputs.docker_arguments }})
           echo $arguments
-          # if [[ -z ${{ inputs.docker_arguments }} ]]
-          # then
-          #   echo "there are no arguments in docker file"
-          #   command="docker build -f $service_name/Dockerfile . -t $Docker_image"
-          # else
-          #    echo "there are arguments"
-          #    arguments=$(echo ${{ inputs.docker_arguments }})
-          #    command="docker build -t $Docker_image -f $service_name/Dockerfile --build-arg $arguments . "
-          #  fi
-          # echo "$command"
-          # $command
-          # docker push $Docker_image
+          if [[ ! -z ${{ inputs.docker_arguments }} ]]
+          then
+            echo "there are arguments"
+            arguments=$(echo ${{ inputs.docker_arguments }})
+            echo "Arguments: $arguments"
+            command="docker build -t $Docker_image -f $service_name/Dockerfile --build-arg $arguments . "
+          else
+             echo "there are no arguments in docker file"
+             arguments=$(echo ${{ inputs.docker_arguments }})
+             command="docker build -f $service_name/Dockerfile . -t $Docker_image"
+           fi
+          echo "$command"
+          $command
+          docker push $Docker_image
